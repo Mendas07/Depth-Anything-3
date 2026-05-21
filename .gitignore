@@ -33,3 +33,16 @@ input_images*/
 src/debug_main.py
 temp*.png
 /outputs
+ =2
+ datasets/
+ inspect_npz.py
+ src/depth_anything_3/Early_Stopping.py
+ src/depth_anything_3/analysis_grafic.py
+ src/depth_anything_3/convert_nyu_to_npy.py
+ src/depth_anything_3/infer_metric.py
+ src/depth_anything_3/logs/
+ src/depth_anything_3/plot_metrics.py
+ suim/
+ uieb/
+ usis10k/
+ venv/

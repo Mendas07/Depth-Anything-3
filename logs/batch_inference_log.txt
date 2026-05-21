@@ -1,0 +1,414 @@
+=========================================
+ Depth Anything 3 Batch Inference Log
+=========================================
+
+Date: 2026-05-17 16:04:23.219272
+
+===== SYSTEM =====
+Platform: Linux-6.17.9-76061709-generic-x86_64-with-glibc2.35
+Python Version: 3.10.20
+Python Executable: /home/pdi-b06/anaconda3/envs/depth3/bin/python3
+
+===== CONDA =====
+Conda Environment: depth3
+Conda Path: /home/pdi-b06/anaconda3/envs/depth3
+
+===== GPU =====
+Sun May 17 16:04:23 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.03             Driver Version: 580.159.03     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4070 Ti     Off |   00000000:01:00.0  On |                  N/A |
+|  0%   41C    P2             34W /  285W |     753MiB /  12282MiB |      2%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            4556      G   /usr/lib/xorg/Xorg                      208MiB |
+|    0   N/A  N/A            5039      G   /usr/bin/gnome-shell                     27MiB |
+|    0   N/A  N/A         1521223      G   rustdesk                                 41MiB |
+|    0   N/A  N/A         1556464      G   gnome-control-center                     15MiB |
+|    0   N/A  N/A         2467431      G   /usr/share/code/code                     84MiB |
+|    0   N/A  N/A         3518685      C   /usr/share/rustdesk/rustdesk            232MiB |
+|    0   N/A  N/A         3531845      G   /usr/share/rustdesk/rustdesk             13MiB |
++-----------------------------------------------------------------------------------------+
+
+===== CUDA / NVCC =====
+NVCC not found
+
+===== INSTALLED PACKAGES =====
+addict==2.4.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+antlr4-python3-runtime==4.9.3
+anyio==4.13.0
+apsw==3.53.1.0
+argcomplete==3.6.3
+asttokens==3.0.1
+attrs==26.1.0
+blinker==1.9.0
+certifi==2026.4.22
+cfgv==3.5.0
+charset-normalizer==3.4.7
+click==8.3.3
+colorama==0.4.6
+comm==0.2.3
+ConfigArgParse==1.7.5
+contourpy==1.3.2
+cuda-bindings==13.2.0
+cuda-pathfinder==1.5.4
+cuda-toolkit==13.0.2
+cycler==0.12.1
+dash==4.1.0
+debugpy==1.8.20
+decorator==4.4.2
+-e git+https://github.com/ByteDance-Seed/depth-anything-3@2c21ea849ceec7b469a3e62ea0c0e270afc3281a#egg=depth_anything_3
+distlib==0.3.8
+e3nn==0.6.0
+einops==0.8.2
+evo==1.36.4
+exceptiongroup==1.3.1
+executing==2.2.1
+fastapi==0.136.1
+fastjsonschema==2.21.2
+filelock==3.15.4
+Flask==3.1.3
+fonttools==4.63.0
+fsspec==2026.4.0
+geographiclib==2.0
+h11==0.16.0
+hf-xet==1.5.0
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.14.0
+identify==2.6.19
+idna==3.15
+ImageIO==2.37.3
+imageio-ffmpeg==0.6.0
+importlib_metadata==9.0.0
+ipykernel==7.1.0
+ipython==8.38.0
+ipywidgets==8.1.8
+itsdangerous==2.2.0
+jedi==0.19.2
+Jinja2==3.1.6
+joblib==1.5.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+jupyter_client==8.8.0
+jupyter_core==5.9.1
+jupyterlab_widgets==3.0.16
+kiwisolver==1.5.0
+lark==1.2.2
+lz4==4.4.5
+markdown-it-py==4.2.0
+MarkupSafe==2.1.5
+matplotlib==3.10.9
+matplotlib-inline==0.2.1
+mdurl==0.1.2
+moviepy==1.0.3
+mpmath==1.3.0
+narwhals==2.21.2
+natsort==8.4.0
+navms-graphs-interface @ git+https://github.com/NAVMS-FURG/graphs-interface.git@ef8fc0d5a301f6415f644c8c627552a64ec2947c
+nbformat==5.10.4
+nest-asyncio==1.6.0
+networkx==3.3
+nodeenv==1.10.0
+numexpr==2.14.1
+numpy==1.26.4
+nvidia-cublas==13.1.1.3
+nvidia-cuda-cupti==13.0.85
+nvidia-cuda-nvrtc==13.0.88
+nvidia-cuda-runtime==13.0.96
+nvidia-cudnn-cu13==9.20.0.48
+nvidia-cufft==12.0.0.61
+nvidia-cufile==1.15.1.6
+nvidia-curand==10.4.0.35
+nvidia-cusolver==12.0.4.66
+nvidia-cusparse==12.6.3.3
+nvidia-cusparselt-cu13==0.8.1
+nvidia-nccl-cu13==2.29.7
+nvidia-nvjitlink==13.0.88
+nvidia-nvshmem-cu13==3.4.5
+nvidia-nvtx==13.0.85
+omegaconf==2.3.0
+open3d==0.19.0
+opencv-python==4.11.0.86
+opt-einsum-fx==0.1.4
+opt_einsum==3.4.0
+packaging==24.1
+pandas==2.3.3
+parso==0.8.5
+pexpect==4.9.0
+pillow==12.2.0
+pillow_heif==1.3.0
+platformdirs==4.2.2
+plotly==6.7.0
+plyfile==1.1.3
+pre_commit==4.6.0
+proglog==0.1.12
+prompt_toolkit==3.0.52
+psutil==6.0.0
+ptyprocess==0.7.0
+pure_eval==0.2.3
+pycolmap==4.0.4
+pydantic==2.10.2
+pydantic_core==2.27.1
+pygame==2.6.1
+Pygments==2.20.0
+pyparsing==3.3.2
+pyquaternion==0.9.9
+python-dateutil==2.9.0.post0
+pytz==2026.2
+PyYAML==6.0.3
+pyzmq==27.1.0
+referencing==0.37.0
+regex==2024.5.15
+requests==2.34.2
+retrying==1.4.2
+rich==15.0.0
+rosbags==0.11.2
+rpds-py==0.30.0
+ruamel.yaml==0.19.1
+safetensors==0.4.3
+scikit-learn==1.7.2
+scipy==1.15.3
+seaborn==0.13.2
+shellingham==1.5.4
+six==1.17.0
+stack-data==0.6.3
+starlette==1.0.0
+sympy==1.14.0
+threadpoolctl==3.6.0
+torch==2.12.0
+torchvision==0.27.0
+tornado==6.5.4
+tqdm==4.67.3
+traitlets==5.14.3
+trimesh==4.12.2
+triton==3.7.0
+typer==0.25.1
+typing-inspection==0.4.2
+typing_extensions==4.12.2
+tzdata==2025.2
+urllib3==2.7.0
+uvicorn==0.47.0
+virtualenv==20.26.3
+wcwidth==0.5.2
+Werkzeug==3.1.8
+widgetsnbextension==4.0.15
+xformers==0.0.35
+zipp==3.23.1
+zstandard==0.25.0
+
+===== EXECUTION =====
+Model: da3-large
+Device: cuda
+Batch Size: 8
+Input directory: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb
+Output directory: /mnt/almacen/Sorriso1909/depth-anything-3/outputs/depth_color
+
+Total images found: 105
+
+
+====================================
+Batch: 1/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/10139.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/10151.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/10909.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/10945.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/11052.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/11064.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/11374.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/11398.png
+[SUCCESS]
+
+====================================
+Batch: 2/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1225.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12290.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12299.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12324.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12336.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12348.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12422.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12433.png
+[SUCCESS]
+
+====================================
+Batch: 3/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12445.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/12900.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1407.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1491.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15001.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15003.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15045.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15094.png
+[SUCCESS]
+
+====================================
+Batch: 4/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15113.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15136.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1539.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15418.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15426.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15544.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/15704.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1573.png
+[SUCCESS]
+
+====================================
+Batch: 5/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1660.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1742.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/1957.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2546.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2629.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2677.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2701.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2774.png
+[SUCCESS]
+
+====================================
+Batch: 6/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2787.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2882.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2977.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/2_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3001.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3015.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3196.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3202.png
+[SUCCESS]
+
+====================================
+Batch: 7/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3330.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3650.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3728.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3925.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/3947.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/4070.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/5554.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/5818.png
+[SUCCESS]
+
+====================================
+Batch: 8/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/5830.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/6062.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/6082.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/6788.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/6820.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/6872.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/7027.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/7643.png
+[SUCCESS]
+
+====================================
+Batch: 9/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/7654.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/7916.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/8010.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/8046.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/8056.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/8262.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/8288.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/906_img_.png
+[SUCCESS]
+
+====================================
+Batch: 10/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/907_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/908_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/909_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/910_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/911_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/912_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/913_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/914_img_.png
+[SUCCESS]
+
+====================================
+Batch: 11/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/915_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/916_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/917_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/918_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/919_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/920_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/921_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/922_img_.png
+[SUCCESS]
+
+====================================
+Batch: 12/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/923_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/924_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/925_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/926_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/927_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/928_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/929_img_.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9547.png
+[SUCCESS]
+
+====================================
+Batch: 13/14
+Batch size: 8
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9554.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9557.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9567.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9896.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9900.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9907.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/9947.png
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/d_r_105_.jpg
+[SUCCESS]
+
+====================================
+Batch: 14/14
+Batch size: 1
+
+Image: /mnt/almacen/Sorriso1909/depth-anything-3/datasets/val/rgb/test_00404.jpg
+[SUCCESS]
+
+====================================
+Inference Finished
+====================================

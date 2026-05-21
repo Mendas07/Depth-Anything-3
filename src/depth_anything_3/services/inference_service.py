@@ -1,21 +1,5 @@
 # Copyright (c) 2025 ByteDance Ltd. and/or its affiliates
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""
-Unified Inference Service
-Provides unified interface for local and remote inference
-"""
 
 from typing import Any, Dict, List, Optional, Union
 import numpy as np
@@ -23,7 +7,6 @@ import requests
 import typer
 
 from ..api import DepthAnything3
-
 
 class InferenceService:
     """Unified inference service class"""
@@ -36,8 +19,15 @@ class InferenceService:
     def load_model(self):
         """Load model"""
         if self.model is None:
-            typer.echo(f"Loading model from {self.model_dir}...")
-            self.model = DepthAnything3.from_pretrained(self.model_dir).to(self.device)
+           typer.echo(f"Loading model from {self.model_dir}...")
+           HF_REPO_MAP = {
+            "da3-small": "depth-anything/DA3-SMALL",
+            "da3-base": "depth-anything/DA3-BASE",
+            "da3-large": "depth-anything/DA3-LARGE",
+            "da3-giant": "depth-anything/DA3-GIANT",
+           }
+           repo_id = HF_REPO_MAP.get(self.model_dir, self.model_dir)
+           self.model = DepthAnything3.from_pretrained(repo_id).to(self.device)
         return self.model
 
     def run_local_inference(
@@ -57,6 +47,7 @@ class InferenceService:
         num_max_points: int = 1_000_000,
         show_cameras: bool = True,
         feat_vis_fps: int = 15,
+        **kwargs  # <--- CAPTURA O FILENAMES AQUI
     ) -> Any:
         """Run local inference"""
         if export_feat_layers is None:
@@ -79,21 +70,18 @@ class InferenceService:
             "num_max_points": num_max_points,
             "show_cameras": show_cameras,
             "feat_vis_fps": feat_vis_fps,
+            **kwargs # <--- REPASSA O FILENAMES PARA O MODELO
         }
 
-        # Add pose data (if exists)
         if extrinsics is not None:
             inference_kwargs["extrinsics"] = extrinsics
         if intrinsics is not None:
             inference_kwargs["intrinsics"] = intrinsics
 
-        # Run inference
         typer.echo(f"Running inference on {len(image_paths)} images...")
         prediction = model.inference(**inference_kwargs)
 
         typer.echo(f"Results saved to {export_dir}")
-        typer.echo(f"Export format: {export_format}")
-
         return prediction
 
     def run_backend_inference(
@@ -114,16 +102,15 @@ class InferenceService:
         num_max_points: int = 1_000_000,
         show_cameras: bool = True,
         feat_vis_fps: int = 15,
+        **kwargs # <--- SUPORTE ADICIONADO
     ) -> Dict[str, Any]:
         """Run backend inference"""
         if export_feat_layers is None:
             export_feat_layers = []
 
-        # Check backend status
         if not self._check_backend_status(backend_url):
             raise typer.BadParameter(f"Backend service is not running at {backend_url}")
 
-        # Prepare payload
         payload = {
             "image_paths": image_paths,
             "export_dir": export_dir,
@@ -138,43 +125,29 @@ class InferenceService:
             "num_max_points": num_max_points,
             "show_cameras": show_cameras,
             "feat_vis_fps": feat_vis_fps,
+            **kwargs # <--- REPASSA PARA O BACKEND
         }
 
-        # Add pose data (if exists)
         if extrinsics is not None:
             payload["extrinsics"] = [ext.astype(np.float64).tolist() for ext in extrinsics]
         if intrinsics is not None:
             payload["intrinsics"] = [intr.astype(np.float64).tolist() for intr in intrinsics]
 
-        # Submit task
         typer.echo("Submitting inference task to backend...")
         try:
             response = requests.post(f"{backend_url}/inference", json=payload, timeout=30)
             response.raise_for_status()
             result = response.json()
-
-            if result["success"]:
-                task_id = result["task_id"]
-                typer.echo("Task submitted successfully!")
-                typer.echo(f"Task ID: {task_id}")
-                typer.echo(f"Results will be saved to: {export_dir}")
-                typer.echo(f"Check backend logs for progress updates with task ID: {task_id}")
-                return result
-            else:
-                raise typer.BadParameter(
-                    f"Backend inference submission failed: {result['message']}"
-                )
+            return result
         except requests.exceptions.RequestException as e:
             raise typer.BadParameter(f"Backend inference submission failed: {e}")
 
     def _check_backend_status(self, backend_url: str) -> bool:
-        """Check backend status"""
         try:
             response = requests.get(f"{backend_url}/status", timeout=5)
             return response.status_code == 200
         except Exception:
             return False
-
 
 def run_inference(
     image_paths: List[str],
@@ -195,9 +168,9 @@ def run_inference(
     num_max_points: int = 1_000_000,
     show_cameras: bool = True,
     feat_vis_fps: int = 15,
+    **kwargs # <--- ACEITA O FILENAMES AQUI
 ) -> Union[Any, Dict[str, Any]]:
     """Unified inference interface"""
-
     service = InferenceService(model_dir, device)
 
     if backend_url:
@@ -218,6 +191,7 @@ def run_inference(
             num_max_points=num_max_points,
             show_cameras=show_cameras,
             feat_vis_fps=feat_vis_fps,
+            **kwargs # <--- REPASSA PARA O SERVICE
         )
     else:
         return service.run_local_inference(
@@ -236,4 +210,5 @@ def run_inference(
             num_max_points=num_max_points,
             show_cameras=show_cameras,
             feat_vis_fps=feat_vis_fps,
+            **kwargs # <--- REPASSA PARA O SERVICE
         )

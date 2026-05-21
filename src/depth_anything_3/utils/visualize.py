@@ -2,23 +2,25 @@
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 
 import matplotlib
 import numpy as np
 import torch
+
 from einops import rearrange
 
 from depth_anything_3.utils.logger import logger
 
+
+# ============================================================
+# VISUALIZAÇÃO NUMPY
+# ============================================================
 
 def visualize_depth(
     depth: np.ndarray,
@@ -27,94 +29,218 @@ def visualize_depth(
     percentile=2,
     ret_minmax=False,
     ret_type=np.uint8,
+
+    # ========================================================
+    # ALTERAÇÃO PRINCIPAL
+    # ========================================================
+
     cmap="Spectral",
 ):
     """
-    Visualize a depth map using a colormap.
+    Visualize depth map using Spectral colormap.
 
-    Args:
-        depth: Input depth map array
-        depth_min: Minimum depth value for normalization. If None, uses percentile
-        depth_max: Maximum depth value for normalization. If None, uses percentile
-        percentile: Percentile for min/max computation if not provided
-        ret_minmax: Whether to return min/max depth values
-        ret_type: Return array type (uint8 or float)
-        cmap: Matplotlib colormap name to use
-
-    Returns:
-        Colored depth visualization as numpy array
-        If ret_minmax=True, also returns depth_min and depth_max
+    PADRONIZAÇÃO:
+    - Igual ao FoundationStereo / DA2
+    - Sem inversão
+    - Sem 1/depth
+    - Sem log
+    - Normalização linear min/max
     """
+
     depth = depth.copy()
-    depth.copy()
+
+    # ========================================================
+    # MÁSCARA VÁLIDA
+    # ========================================================
+
     valid_mask = depth > 0
-    depth[valid_mask] = 1 / depth[valid_mask]
+
+    # ========================================================
+    # DEPTH MIN
+    # ========================================================
+
     if depth_min is None:
+
         if valid_mask.sum() <= 10:
             depth_min = 0
+
         else:
-            depth_min = np.percentile(depth[valid_mask], percentile)
+            depth_min = depth[valid_mask].min()
+
+    # ========================================================
+    # DEPTH MAX
+    # ========================================================
+
     if depth_max is None:
+
         if valid_mask.sum() <= 10:
             depth_max = 0
+
         else:
-            depth_max = np.percentile(depth[valid_mask], 100 - percentile)
+            depth_max = depth[valid_mask].max()
+
+    # ========================================================
+    # EVITAR DIVISÃO POR ZERO
+    # ========================================================
+
     if depth_min == depth_max:
+
         depth_min = depth_min - 1e-6
         depth_max = depth_max + 1e-6
-    cm = matplotlib.colormaps[cmap]
+
+    # ========================================================
+    # NORMALIZAÇÃO LINEAR
+    # ========================================================
+
     depth = ((depth - depth_min) / (depth_max - depth_min)).clip(0, 1)
-    depth = 1 - depth
-    img_colored_np = cm(depth[None], bytes=False)[:, :, :, 0:3]  # value from 0 to 1
+
+    # ========================================================
+    # COLORMAP SPECTRAL
+    # ========================================================
+
+    cm = matplotlib.colormaps[cmap]
+
+    img_colored_np = cm(
+        depth[None],
+        bytes=False
+    )[:, :, :, 0:3]
+
+    # ========================================================
+    # CONVERSÃO DE TIPO
+    # ========================================================
+
     if ret_type == np.uint8:
-        img_colored_np = (img_colored_np[0] * 255.0).astype(np.uint8)
+
+        img_colored_np = (
+            img_colored_np[0] * 255.0
+        ).astype(np.uint8)
+
     elif ret_type == np.float32 or ret_type == np.float64:
+
         img_colored_np = img_colored_np[0]
+
     else:
+
         raise ValueError(f"Invalid return type: {ret_type}")
+
+    # ========================================================
+    # RETORNO
+    # ========================================================
+
     if ret_minmax:
+
         return img_colored_np, depth_min, depth_max
+
     else:
+
         return img_colored_np
 
 
-# GS video rendering visulization function, since it operates in Tensor space...
-
+# ============================================================
+# VISUALIZAÇÃO TENSOR
+# ============================================================
 
 def vis_depth_map_tensor(
-    result: torch.Tensor,  # "*batch height width"
+    result: torch.Tensor,
     color_map: str = "Spectral",
-) -> torch.Tensor:  # "*batch 3 height with"
+) -> torch.Tensor:
     """
-    Color-map the depth map.
-    """
-    far = result.reshape(-1)[:16_000_000].float().quantile(0.99).log().to(result)
-    try:
-        near = result[result > 0][:16_000_000].float().quantile(0.01).log().to(result)
-    except (RuntimeError, ValueError) as e:
-        logger.error(f"No valid depth values found. Reason: {e}")
-        near = torch.zeros_like(far)
-    result = result.log()
-    result = (result - near) / (far - near)
-    return apply_color_map_to_image(result, color_map)
+    Tensor visualization using Spectral colormap.
 
+    Padronizado com:
+    - FoundationStereo
+    - DA2
+    - saída NumPy acima
+    """
+
+    flat = result.reshape(-1).float()
+
+    valid = flat[flat > 0]
+
+    # ========================================================
+    # SEM VALORES VÁLIDOS
+    # ========================================================
+
+    if valid.numel() == 0:
+
+        logger.error("No valid depth values found.")
+
+        near = torch.zeros(
+            1,
+            device=result.device,
+            dtype=result.dtype
+        )
+
+        far = torch.ones(
+            1,
+            device=result.device,
+            dtype=result.dtype
+        )
+
+    else:
+
+        near = valid.min().to(result)
+        far = valid.max().to(result)
+
+    # ========================================================
+    # NORMALIZAÇÃO LINEAR
+    # ========================================================
+
+    result = (result - near) / (far - near + 1e-6)
+
+    result = result.clamp(0, 1)
+
+    # ========================================================
+    # APPLY COLORMAP
+    # ========================================================
+
+    return apply_color_map_to_image(
+        result,
+        color_map
+    )
+
+
+# ============================================================
+# APPLY COLOR MAP
+# ============================================================
 
 def apply_color_map(
-    x: torch.Tensor,  # " *batch"
-    color_map: str = "inferno",
-) -> torch.Tensor:  # "*batch 3"
-    cmap = matplotlib.cm.get_cmap(color_map)
+    x: torch.Tensor,
+    color_map: str = "Spectral",
+) -> torch.Tensor:
 
-    # Convert to NumPy so that Matplotlib color maps can be used.
-    mapped = cmap(x.float().detach().clip(min=0, max=1).cpu().numpy())[..., :3]
+    cmap = matplotlib.colormaps[color_map]
 
-    # Convert back to the original format.
-    return torch.tensor(mapped, device=x.device, dtype=torch.float32)
+    mapped = cmap(
+        x.float()
+         .detach()
+         .clip(min=0, max=1)
+         .cpu()
+         .numpy()
+    )[..., :3]
 
+    return torch.tensor(
+        mapped,
+        device=x.device,
+        dtype=torch.float32
+    )
+
+
+# ============================================================
+# APPLY COLOR MAP TO IMAGE
+# ============================================================
 
 def apply_color_map_to_image(
-    image: torch.Tensor,  # "*batch height width"
-    color_map: str = "inferno",
-) -> torch.Tensor:  # "*batch 3 height with"
-    image = apply_color_map(image, color_map)
-    return rearrange(image, "... h w c -> ... c h w")
+    image: torch.Tensor,
+    color_map: str = "Spectral",
+) -> torch.Tensor:
+
+    image = apply_color_map(
+        image,
+        color_map
+    )
+
+    return rearrange(
+        image,
+        "... h w c -> ... c h w"
+    )
